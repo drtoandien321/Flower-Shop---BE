@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AnnFlowerProject.DTOs;
-using AnnFlowerProject.Services;
 using System.ComponentModel;
+using AnnFlowerProject.Services.Interfaces;
 
 namespace AnnFlowerProject.Controllers
 {

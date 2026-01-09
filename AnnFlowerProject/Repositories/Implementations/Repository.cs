@@ -1,8 +1,9 @@
 using AnnFlowerProject.Data;
+using AnnFlowerProject.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace AnnFlowerProject.Repositories
+namespace AnnFlowerProject.Repositories.Implementations
 {
     public class Repository<T> : IRepository<T> where T : class
     {

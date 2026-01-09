@@ -1,12 +1,13 @@
 ﻿using AnnFlowerProject.DTOs;
 using AnnFlowerProject.Models;
+using AnnFlowerProject.Services.Interfaces;
 using AnnFlowerProject.UnitOfWork;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace AnnFlowerProject.Services
+namespace AnnFlowerProject.Services.Implementations
 {
     public class AuthService : IAuthService
     {

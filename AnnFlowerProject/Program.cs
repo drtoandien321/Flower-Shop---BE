@@ -4,10 +4,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AnnFlowerProject.Data;
-using AnnFlowerProject.Services;
-using AnnFlowerProject.Repositories;
 using AnnFlowerProject.UnitOfWork;
 using AnnFlowerProject.Repositories.Interfaces;
+using AnnFlowerProject.Repositories.Implementations;
+using AnnFlowerProject.Services.Implementations;
+using AnnFlowerProject.Services.Interfaces;
 
 namespace AnnFlowerProject
 {

@@ -1,8 +1,9 @@
 using AnnFlowerProject.Data;
 using AnnFlowerProject.Models;
+using AnnFlowerProject.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace AnnFlowerProject.Repositories
+namespace AnnFlowerProject.Repositories.Implementations
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {

@@ -1,6 +1,6 @@
 using AnnFlowerProject.DTOs;
 
-namespace AnnFlowerProject.Services
+namespace AnnFlowerProject.Services.Interfaces
 {
     public interface IAuthService
     {

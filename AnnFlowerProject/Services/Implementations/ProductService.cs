@@ -1,8 +1,9 @@
-using AnnFlowerProject.DTOs;
+﻿using AnnFlowerProject.DTOs;
 using AnnFlowerProject.Models;
+using AnnFlowerProject.Services.Interfaces;
 using AnnFlowerProject.UnitOfWork;
 
-namespace AnnFlowerProject.Services
+namespace AnnFlowerProject.Services.Implementations
 {
     public class ProductService : IProductService
     {
@@ -87,7 +88,7 @@ namespace AnnFlowerProject.Services
             var category = await _unitOfWork.Categories.GetByIdAsync(createDto.CategoryId);
             if (category == null)
             {
-                return null; // Category kh�ng t?n t?i
+                return null; // Category không tồn tại
             }
 
             // Create new product
@@ -129,14 +130,14 @@ namespace AnnFlowerProject.Services
             var product = await _unitOfWork.Products.GetByIdAsync(id);
             if (product == null)
             {
-                return null; // Product kh�ng t?n t?i
+                return null; // Product không tồn tại
             }
 
             // Validate category exists
             var category = await _unitOfWork.Categories.GetByIdAsync(updateDto.CategoryId);
             if (category == null)
             {
-                return null; // Category kh�ng t?n t?i
+                return null; // Category không tồn tại
             }
 
             // Update product properties
@@ -175,7 +176,7 @@ namespace AnnFlowerProject.Services
             
             if (product == null)
             {
-                return false; // Product kh�ng t?n t?i
+                return false; // Product không tồn tại
             }
 
             _unitOfWork.Products.Remove(product);

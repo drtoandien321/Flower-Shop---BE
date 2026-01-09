@@ -1,5 +1,6 @@
 using AnnFlowerProject.Data;
-using AnnFlowerProject.Repositories;
+using AnnFlowerProject.Repositories.Implementations;
+using AnnFlowerProject.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace AnnFlowerProject.UnitOfWork

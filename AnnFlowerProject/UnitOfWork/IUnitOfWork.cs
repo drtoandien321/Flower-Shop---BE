@@ -1,4 +1,4 @@
-using AnnFlowerProject.Repositories;
+using AnnFlowerProject.Repositories.Interfaces;
 
 namespace AnnFlowerProject.UnitOfWork
 {

@@ -1,6 +1,6 @@
 using AnnFlowerProject.Models;
 
-namespace AnnFlowerProject.Repositories
+namespace AnnFlowerProject.Repositories.Interfaces
 {
     public interface IUserRepository : IRepository<User>
     {

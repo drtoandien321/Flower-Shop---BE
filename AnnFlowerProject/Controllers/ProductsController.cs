@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AnnFlowerProject.Services;
+using AnnFlowerProject.DTOs;
 
 namespace AnnFlowerProject.Controllers
 {
@@ -14,6 +15,8 @@ namespace AnnFlowerProject.Controllers
         {
             _productService = productService;
         }
+
+        #region Read Operations (Public)
 
         /// <summary>
         /// L?y t?t c? s?n ph?m
@@ -141,5 +144,147 @@ namespace AnnFlowerProject.Controllers
                 });
             }
         }
+
+        #endregion
+
+        #region Create, Update, Delete Operations (Admin Only)
+
+        /// <summary>
+        /// T?o s?n ph?m m?i (Admin only)
+        /// </summary>
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "D? li?u kh?ng h?p l?",
+                        errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage))
+                    });
+                }
+
+                var product = await _productService.CreateProductAsync(createDto);
+
+                if (product == null)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Kh?ng th? th?c hi?n t?o s?n ph?m. Vui l?ng ki?m tra CategoryId c? t?n t?ng h?p l? kh?ng."
+                    });
+                }
+
+                return CreatedAtAction(
+                    nameof(GetProductById),
+                    new { id = product.ProductId },
+                    new
+                    {
+                        success = true,
+                        message = "T?o s?n ph?m th?nh c?ng",
+                        data = product
+                    });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Có l?i x?y ra khi t?o s?n ph?m",
+                    error = ex.Message
+                });
+            }
+        }
+
+        /// <summary>
+        /// C?p nh?t s?n ph?m (Admin only)
+        /// </summary>
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductDto updateDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "D? li?u kh?ng h?p l?",
+                        errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage))
+                    });
+                }
+
+                var product = await _productService.UpdateProductAsync(id, updateDto);
+
+                if (product == null)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = $"Kh?ng t?m th?y s?n ph?m v?i ID {id} ho?c CategoryId kh?ng h?p l?"
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "C?p nh?t s?n ph?m th?nh c?ng",
+                    data = product
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Có l?i x?y ra khi c?p nh?t s?n ph?m",
+                    error = ex.Message
+                });
+            }
+        }
+
+        /// <summary>
+        /// X?a s?n ph?m (Admin only)
+        /// </summary>
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            try
+            {
+                var result = await _productService.DeleteProductAsync(id);
+
+                if (!result)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = $"Kh?ng t?m th?y s?n ph?m v?i ID {id}"
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "X?a s?n ph?m th?nh c?ng"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Có l?i x?y ra khi xóa s?n ph?m",
+                    error = ex.Message
+                });
+            }
+        }
+
+        #endregion
     }
 }

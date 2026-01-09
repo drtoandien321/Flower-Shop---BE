@@ -22,6 +22,26 @@ namespace AnnFlowerProject.DTOs
         public string CategoryName { get; set; } = string.Empty;
     }
 
+    public class CreateProductDto
+    {
+        public string ProductName { get; set; } = string.Empty;
+        public decimal UnitPrice { get; set; }
+        public int StockQuantity { get; set; }
+        public string ImageURL { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int CategoryId { get; set; }
+    }
+
+    public class UpdateProductDto
+    {
+        public string ProductName { get; set; } = string.Empty;
+        public decimal UnitPrice { get; set; }
+        public int StockQuantity { get; set; }
+        public string ImageURL { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int CategoryId { get; set; }
+    }
+
     public class CategoryDto
     {
         public int CategoryId { get; set; }

@@ -73,5 +73,10 @@ namespace AnnFlowerProject.Repositories.Implementations
             
             return await _dbSet.CountAsync(predicate);
         }
+
+        public virtual async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
     }
 }

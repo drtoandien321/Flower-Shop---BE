@@ -1,7 +1,7 @@
 ﻿using AnnFlowerProject.DTOs;
 using AnnFlowerProject.Models;
+using AnnFlowerProject.Repositories.Interfaces;
 using AnnFlowerProject.Services.Interfaces;
-using AnnFlowerProject.UnitOfWork;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,19 +11,19 @@ namespace AnnFlowerProject.Services.Implementations
 {
     public class AuthService : IAuthService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
-        public AuthService(IUnitOfWork unitOfWork, IConfiguration configuration)
+        public AuthService(IUserRepository userRepository, IConfiguration configuration)
         {
-            _unitOfWork = unitOfWork;
+            _userRepository = userRepository;
             _configuration = configuration;
         }
 
         public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto loginDto)
         {
             // Tìm user theo email
-            var user = await _unitOfWork.Users.GetByEmailAsync(loginDto.Email);
+            var user = await _userRepository.GetByEmailAsync(loginDto.Email);
 
             if (user == null)
             {
@@ -74,11 +74,11 @@ namespace AnnFlowerProject.Services.Implementations
                 RoleId = 2 // Customer role
             };
 
-            await _unitOfWork.Users.AddAsync(newUser);
-            await _unitOfWork.SaveChangesAsync();
+            await _userRepository.AddAsync(newUser);
+            await _userRepository.SaveChangesAsync();
 
             // Load role information
-            var userWithRole = await _unitOfWork.Users.GetByIdWithRoleAsync(newUser.UserId);
+            var userWithRole = await _userRepository.GetByIdWithRoleAsync(newUser.UserId);
 
             if (userWithRole == null)
                 return null;
@@ -102,7 +102,7 @@ namespace AnnFlowerProject.Services.Implementations
 
         public async Task<bool> IsEmailExistsAsync(string email)
         {
-            return await _unitOfWork.Users.IsEmailExistsAsync(email);
+            return await _userRepository.IsEmailExistsAsync(email);
         }
 
         private string GenerateJwtToken(User user)

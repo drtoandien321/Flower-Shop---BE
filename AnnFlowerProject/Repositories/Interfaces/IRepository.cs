@@ -20,5 +20,8 @@ namespace AnnFlowerProject.Repositories.Interfaces
         // Utility methods
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null);
+        
+        // Save changes
+        Task<int> SaveChangesAsync();
     }
 }

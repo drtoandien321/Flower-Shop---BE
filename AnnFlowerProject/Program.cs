@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AnnFlowerProject.Data;
-using AnnFlowerProject.UnitOfWork;
 using AnnFlowerProject.Repositories.Interfaces;
 using AnnFlowerProject.Repositories.Implementations;
 using AnnFlowerProject.Services.Implementations;
@@ -33,10 +32,7 @@ namespace AnnFlowerProject
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-            // Register Unit of Work
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
-
-            // Register Services
+            // Register Services (inject repositories directly)
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IProductService, ProductService>();
 

@@ -1,24 +1,28 @@
 ﻿using AnnFlowerProject.DTOs;
 using AnnFlowerProject.Models;
+using AnnFlowerProject.Repositories.Interfaces;
 using AnnFlowerProject.Services.Interfaces;
-using AnnFlowerProject.UnitOfWork;
 
 namespace AnnFlowerProject.Services.Implementations
 {
     public class ProductService : IProductService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public ProductService(IUnitOfWork unitOfWork)
+        public ProductService(
+            IProductRepository productRepository,
+            ICategoryRepository categoryRepository)
         {
-            _unitOfWork = unitOfWork;
+            _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
         }
 
         #region Read Operations
 
         public async Task<List<ProductListDto>> GetAllProductsAsync()
         {
-            var products = await _unitOfWork.Products.GetAllWithCategoryAsync();
+            var products = await _productRepository.GetAllWithCategoryAsync();
             
             return products.Select(p => new ProductListDto
             {
@@ -33,7 +37,7 @@ namespace AnnFlowerProject.Services.Implementations
 
         public async Task<ProductDto?> GetProductByIdAsync(int id)
         {
-            var product = await _unitOfWork.Products.GetByIdWithCategoryAsync(id);
+            var product = await _productRepository.GetByIdWithCategoryAsync(id);
 
             if (product == null)
                 return null;
@@ -53,7 +57,7 @@ namespace AnnFlowerProject.Services.Implementations
 
         public async Task<List<ProductListDto>> GetProductsByCategoryAsync(int categoryId)
         {
-            var products = await _unitOfWork.Products.GetByCategoryIdAsync(categoryId);
+            var products = await _productRepository.GetByCategoryIdAsync(categoryId);
             
             return products.Select(p => new ProductListDto
             {
@@ -68,7 +72,7 @@ namespace AnnFlowerProject.Services.Implementations
 
         public async Task<List<CategoryDto>> GetAllCategoriesAsync()
         {
-            var categories = await _unitOfWork.Categories.GetAllWithProductsAsync();
+            var categories = await _categoryRepository.GetAllWithProductsAsync();
             
             return categories.Select(c => new CategoryDto
             {
@@ -85,10 +89,10 @@ namespace AnnFlowerProject.Services.Implementations
         public async Task<ProductDto?> CreateProductAsync(CreateProductDto createDto)
         {
             // Validate category exists
-            var category = await _unitOfWork.Categories.GetByIdAsync(createDto.CategoryId);
+            var category = await _categoryRepository.GetByIdAsync(createDto.CategoryId);
             if (category == null)
             {
-                return null; // Category không tồn tại
+                return null;
             }
 
             // Create new product
@@ -102,11 +106,11 @@ namespace AnnFlowerProject.Services.Implementations
                 CategoryId = createDto.CategoryId
             };
 
-            await _unitOfWork.Products.AddAsync(product);
-            await _unitOfWork.SaveChangesAsync();
+            await _productRepository.AddAsync(product);
+            await _productRepository.SaveChangesAsync();
 
             // Load category information
-            var createdProduct = await _unitOfWork.Products.GetByIdWithCategoryAsync(product.ProductId);
+            var createdProduct = await _productRepository.GetByIdWithCategoryAsync(product.ProductId);
 
             if (createdProduct == null)
                 return null;
@@ -127,17 +131,17 @@ namespace AnnFlowerProject.Services.Implementations
         public async Task<ProductDto?> UpdateProductAsync(int id, UpdateProductDto updateDto)
         {
             // Get existing product
-            var product = await _unitOfWork.Products.GetByIdAsync(id);
+            var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
             {
-                return null; // Product không tồn tại
+                return null;
             }
 
             // Validate category exists
-            var category = await _unitOfWork.Categories.GetByIdAsync(updateDto.CategoryId);
+            var category = await _categoryRepository.GetByIdAsync(updateDto.CategoryId);
             if (category == null)
             {
-                return null; // Category không tồn tại
+                return null;
             }
 
             // Update product properties
@@ -148,11 +152,11 @@ namespace AnnFlowerProject.Services.Implementations
             product.Description = updateDto.Description;
             product.CategoryId = updateDto.CategoryId;
 
-            _unitOfWork.Products.Update(product);
-            await _unitOfWork.SaveChangesAsync();
+            _productRepository.Update(product);
+            await _productRepository.SaveChangesAsync();
 
             // Return updated product with category
-            var updatedProduct = await _unitOfWork.Products.GetByIdWithCategoryAsync(id);
+            var updatedProduct = await _productRepository.GetByIdWithCategoryAsync(id);
 
             if (updatedProduct == null)
                 return null;
@@ -172,15 +176,15 @@ namespace AnnFlowerProject.Services.Implementations
 
         public async Task<bool> DeleteProductAsync(int id)
         {
-            var product = await _unitOfWork.Products.GetByIdAsync(id);
+            var product = await _productRepository.GetByIdAsync(id);
             
             if (product == null)
             {
-                return false; // Product không tồn tại
+                return false;
             }
 
-            _unitOfWork.Products.Remove(product);
-            await _unitOfWork.SaveChangesAsync();
+            _productRepository.Remove(product);
+            await _productRepository.SaveChangesAsync();
 
             return true;
         }
